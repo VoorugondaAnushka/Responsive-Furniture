@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background: #ebebeb;;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .heading{
+            text-decoration: none;
+            color: black;
+
+        }
+        main {
+            padding: 20px;
+        }
+        
+        #cart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .cart-item-image {
+            width: 100px;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .buy-now {
+            background-color: #4caf50;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .buy-now:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2 class="heading">Your Cart</h2>
+    </header>
+    <main>
+        <h2>Your Cart Items</h2>
+        <div id="cart-container">
+            <!-- Cart items will be displayed here -->
+        </div>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cartContainer = document.getElementById("cart-container");
+
+            // Get cart items from localStorage
+            const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+                return;
+            }
+
+            cartItems.forEach((item, index) => {
+                // Create a cart item element
+                const cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                cartItem.innerHTML = `
+                    <img src="${item.imageSrc}" alt="${item.title}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <h3>${item.title}</h3>
+                        <p>Price: ${item.price}</p>
+                    </div>
+                `;
+
+                // Add "Buy Now" button
+                const buyNowButton = document.createElement("button");
+                buyNowButton.textContent = "Buy Now";
+                buyNowButton.classList.add("buy-now");
+                buyNowButton.addEventListener("click", () => {
+                    // Save this item's details to localStorage
+                    localStorage.setItem("selectedItem", JSON.stringify(item));
+                    // Redirect to checkout page
+                    window.location.href = "payment.html";
+                });
+
+                cartItem.querySelector(".cart-item-details").appendChild(buyNowButton);
+
+                cartContainer.appendChild(cartItem);
+            });
+
+            // Add "Clear Cart" button at the bottom
+            const clearButton = document.createElement("button");
+            clearButton.textContent = "Clear Cart";
+            clearButton.addEventListener("click", () => {
+                localStorage.removeItem("cartItems");
+                location.reload(); // Refresh the page
+            });
+            cartContainer.appendChild(clearButton);
+        });
+    </script>
+</body>
+</html>
